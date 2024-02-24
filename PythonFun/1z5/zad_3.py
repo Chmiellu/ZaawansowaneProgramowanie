@@ -4,7 +4,6 @@ def display_even_numbers(numbers):
         if num % 2 == 0:
             print(num)
 
-# Example usage:
 numbers = random.sample(range(-1000, 2000), 10)
 print(f"All numbers {numbers}")
 print("Even numbers:")
