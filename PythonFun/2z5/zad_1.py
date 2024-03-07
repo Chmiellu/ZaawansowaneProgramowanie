@@ -3,5 +3,6 @@ def hello(name: str, surname: str) -> str:
         raise TypeError("Both 'name' and 'surname' must be strings.")
     return f"Cześć {name} {surname}!"
 
+
 result = hello("Tomasz", "Chmiel")
 print(result)
