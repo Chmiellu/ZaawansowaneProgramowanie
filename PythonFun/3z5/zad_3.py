@@ -15,7 +15,10 @@ class House(Property):
         self.plot = int(plot)
 
     def __str__(self):
-        return f"House: area - {self.area}, rooms - {self.rooms}, price($) - {self.price}, address - {self.address}, plot - {self.plot}"
+        return (
+            f"House: area - {self.area}, rooms - {self.rooms}, price($) - {self.price}, address - {self.address}, "
+            f"plot - {self.plot}"
+        )
 
 
 class Flat(Property):
@@ -24,7 +27,10 @@ class Flat(Property):
         self.floor = floor
 
     def __str__(self):
-        return f"Flat: area - {self.area}, rooms - {self.rooms}, price($) - {self.price}, address - {self.address}, floor - {self.floor}"
+        return (
+            f"Flat: area - {self.area}, rooms - {self.rooms}, price($) - {self.price}, address - {self.address}, "
+            f"floor - {self.floor}"
+        )
 
 
 my_house = House(area=150, rooms=5, price=300000, address="123 Main St", plot=500)
