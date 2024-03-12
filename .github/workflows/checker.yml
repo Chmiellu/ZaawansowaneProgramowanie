@@ -16,4 +16,4 @@ jobs:
       - name: Install PyCodeStyle
         run: pip install pycodestyle
       - name: Run PyCodeStyle
-        run: pycodestyle 
+        run: pycodestyle . 
