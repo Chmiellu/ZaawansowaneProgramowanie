@@ -29,16 +29,3 @@ def fetch_breweries(city=None):
     else:
         print("Failed to fetch data from the API.")
         return []
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--city")
-    args = parser.parse_args()
-    breweries = fetch_breweries(city=args.city)
-    for brewery in breweries:
-        print(brewery)
-
-
-if __name__ == "__main__":
-    main()
