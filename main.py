@@ -8,7 +8,6 @@ min_confidence = 0.3
 
 classes = ['person']
 
-np.random.seed(543210)
 
 net = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
 
@@ -38,7 +37,7 @@ for i in range(detected_objects.shape[2]):
 text = f'Number of people: {num_people}'
 cv2.putText(image, text, (10, 30), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
 
-cv2.imshow("Detected Objects", image)
+cv2.imshow("Detected people", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
