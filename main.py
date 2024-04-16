@@ -1,40 +1,44 @@
-import os
+import numpy as np
 import cv2
 
-def count_people(image_path):
-    # Wczytanie obrazu
-    image = cv2.imread(image_path)
+image_path = 'zdjecia/test6.jpg'
+prototxt_path = 'models/MobileNetSSD_deploy.prototxt'
+model_path = 'models/MobileNetSSD_deploy.model'
+min_confidence = 0.3
 
-    # Konwersja obrazu na skale szarości
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+classes = ['background',
+           'aeroplane', 'bicycle', 'bird', 'boat',
+           'bottle', 'bus', 'car', 'cat', 'chair',
+           'cow', 'diningtable', 'dog', 'horse',
+           'motorbike', 'person', 'pottedplant',
+           'sheep', 'sofa', 'train', 'tvmonitor']
 
-    # Inicjalizacja klasyfikatorów do detekcji twarzy, ludzi i górnych części ciała
-    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    human_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
-    upperbody_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_upperbody.xml')
+np.random.seed(543210)
+colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-    # Wykrywanie twarzy na obrazie
-    faces = face_cascade.detectMultiScale(gray, 1.101, 4)
+net = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
 
-    # Wykrywanie ludzi na obrazie
-    humans = human_cascade.detectMultiScale(gray, 1.101, 4)
+image = cv2.imread(image_path)
+height, weight = image.shape[0], image.shape[1]
+blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007, (300, 300), 130)
 
-    # Wykrywanie górnych części ciała na obrazie
-    upperbodies = upperbody_cascade.detectMultiScale(gray, 1.101, 4)
+net.setInput(blob)
+detected_objects = net.forward()
 
-    # Zapisanie liczby wykrytych osób przez każdy klasyfikator w słowniku
-    num_people = {
-        'face': len(faces),
-        'human': len(humans),
-        'upperbody': len(upperbodies)
-    }
+for i in range(detected_objects.shape[2]):
+    confidence = detected_objects[0][0][i][2]
+    if confidence > min_confidence:
+        class_index = int(detected_objects[0, 0, i, 1])
 
-    # Zwrócenie liczby wykrytych osób przez każdy klasyfikator
-    return num_people
+        upper_left_x = int(detected_objects[0, 0, i, 3] * image.shape[1])
+        upper_left_y = int(detected_objects[0, 0, i, 4] * image.shape[0])
+        lower_right_x = int(detected_objects[0, 0, i, 5] * image.shape[1])
+        lower_right_y = int(detected_objects[0, 0, i, 6] * image.shape[0])
 
-# Ścieżka do testowego zdjęcia
-test_image_path = os.path.join('zdjecia', 'test5.jpg')
+        cv2.rectangle(image, (upper_left_x, upper_left_y), (lower_right_x, lower_right_y), colors[class_index], 3)
 
-# Testowanie funkcji
-num_people = count_people(test_image_path)
-print("Liczba osób na zdjęciu:", num_people)
+
+cv2.imshow("Detected Objects", image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
